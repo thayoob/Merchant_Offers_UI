@@ -18,8 +18,8 @@ const Sidebar = () => {
                             Dashboard
                         </NavLink>
                     </li>
-                    <li className={isActive('/categories') ? 'active' : ''}>
-                        <NavLink to="/categories">
+                    <li className={isActive('/Merchant') ? 'active' : ''}>
+                        <NavLink to="/Merchant">
                             Merchant
                         </NavLink>
                     </li>

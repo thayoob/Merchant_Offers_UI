@@ -4,7 +4,7 @@ import Sidebar from './components/layout/Sidebar';
 import Navbar from './components/layout/Navbar';
 import Dashboard from './pages/Dashboard';
 import Categories from './pages/Categories';
-import Products from './pages/Products';
+import Merchant from './pages/Merchant';
 import Orders from './pages/Orders';
 
 const App = () => {
@@ -18,7 +18,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/categories" element={<Categories />} />
-              <Route path="/products" element={<Products />} />
+              <Route path="/Merchant" element={<Merchant />} />
               <Route path="/orders" element={<Orders />} />
             </Routes>
           </main>

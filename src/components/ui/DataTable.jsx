@@ -13,27 +13,28 @@ const DataTable = ({ columns, data, actions }) => {
                 </tr>
             </thead>
             <tbody>
-                {data.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
+                {data.map((row, index) => (
+                    <tr key={index}>
                         {columns.map((col, colIndex) => (
-                            <td key={colIndex}>{row[col.toLowerCase()]}</td>
-                        ))}
-                        {actions && (
-                            <td>
-                                {actions.map((action, index) => (
-                                    <button
-                                        key={index}
-                                        className={action.className}
-                                        onClick={() => action.onClick(row)}
-                                    >
-                                        {action.label}
-                                    </button>
-                                ))}
+                            <td key={colIndex}>
+                                {row[col.toLowerCase().replace(/ /g, '_')]}
                             </td>
-                        )}
+                        ))}
+                        <td>
+                            {actions.map((action, actionIndex) => (
+                                <button
+                                    key={actionIndex}
+                                    className={`btn ${action.className}`}
+                                    onClick={() => action.onClick(row)}
+                                >
+                                    {action.label}
+                                </button>
+                            ))}
+                        </td>
                     </tr>
                 ))}
             </tbody>
+
         </table>
     );
 };
