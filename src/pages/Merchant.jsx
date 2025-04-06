@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import DataTable from '../components/ui/DataTable';
-import ModalForm from '../components/ui/ModalForm';
-import {
-    getMerchants,
-    createMerchant,
-    updateMerchant,
-    deleteMerchant,
-} from '../services/merchantService';
+import MerchantForm from '../components/merchants/MerchantForm';
+import MerchantTable from '../components/merchants/MerchantTable';
+import { getMerchants, createMerchant, updateMerchant, deleteMerchant, } from '../api/services/MerchantService';
 
 const Merchant = () => {
     const [showForm, setShowForm] = useState(false);
@@ -26,49 +21,20 @@ const Merchant = () => {
         fetchMerchants();
     }, []);
 
-    const columns = ['ID', 'Name', 'Email', 'Contact Number', 'Address', 'Status'];
+    const handleEdit = (row) => {
+        setEditingMerchant(row);
+        setShowForm(true);
+    };
 
-    const actions = [
-        {
-            label: 'Edit',
-            className: 'btn-edit',
-            onClick: (row) => {
-                setEditingMerchant(row);
-                setShowForm(true);
-            },
-        },
-        {
-            label: 'Delete',
-            className: 'btn-delete',
-            onClick: async (row) => {
-                if (window.confirm(`Are you sure you want to delete ${row.name}?`)) {
-                    await deleteMerchant(row.id);
-                    fetchMerchants();
-                }
-            },
-        },
-    ];
-
-    const formFields = [
-        { label: 'Name', name: 'name', type: 'text', placeholder: 'Enter your name', required: true },
-        { label: 'Email', name: 'email', type: 'email', placeholder: 'you@example.com', required: true },
-        { label: 'Contact Number', name: 'contact_number', type: 'number', placeholder: 'Enter contact number', required: true },
-        { label: 'Address', name: 'address', type: 'textarea', placeholder: 'Write Address...', required: false },
-        {
-            label: 'Status',
-            name: 'status',
-            type: 'radio',
-            options: [
-                { value: 'active', label: 'Active' },
-                { value: 'inactive', label: 'Inactive' }
-            ],
-            required: true
-        },
-    ];
+    const handleDelete = async (row) => {
+        if (window.confirm(`Are you sure you want to delete ${row.name}?`)) {
+            await deleteMerchant(row.id);
+            fetchMerchants();
+        }
+    };
 
     const handleSubmit = async (e, formData) => {
         e.preventDefault();
-
         const payload = {
             name: formData.name,
             email: formData.email,
@@ -106,20 +72,17 @@ const Merchant = () => {
                 </button>
             </header>
 
-            <DataTable columns={columns} data={merchants} actions={actions} />
+            <MerchantTable data={merchants} onEdit={handleEdit} onDelete={handleDelete} />
 
-            {showForm && (
-                <ModalForm
-                    title={editingMerchant ? 'Edit Merchant' : 'Add New Merchant'}
-                    onClose={() => {
-                        setShowForm(false);
-                        setEditingMerchant(null);
-                    }}
-                    onSubmit={handleSubmit}
-                    fields={formFields}
-                    initialValues={editingMerchant || {}}
-                />
-            )}
+            <MerchantForm
+                visible={showForm}
+                onClose={() => {
+                    setShowForm(false);
+                    setEditingMerchant(null);
+                }}
+                onSubmit={handleSubmit}
+                editingMerchant={editingMerchant}
+            />
         </div>
     );
 };

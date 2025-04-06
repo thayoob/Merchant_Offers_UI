@@ -28,9 +28,9 @@ const AppLayout = () => {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/merchant" element={<Merchant />} />
-            <Route path="/offer" element={<Offer />} />
-            <Route path="/voucherCode" element={<VoucherCode />} />
+            <Route path="/Merchant" element={<Merchant />} />
+            <Route path="/Offer" element={<Offer />} />
+            <Route path="/VoucherCode" element={<VoucherCode />} />
           </Routes>
         </main>
       </div>

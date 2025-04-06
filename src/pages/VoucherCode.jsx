@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import DataTable from '../components/ui/DataTable';
-import ModalForm from '../components/ui/ModalForm';
-import { getVoucherCodes, createVoucherCode, updateVoucherCode, deleteVoucherCode } from '../services/voucherCodeService';
-import { getOffers } from '../services/offersServices';
+import VoucherCodeTable from '../components/voucher-code/VoucherCodeTable';
+import VoucherCodeForm from '../components/voucher-code/VoucherCodeForm';
+import { getVoucherCodes, createVoucherCode, updateVoucherCode, deleteVoucherCode } from '../api/services/VoucherCodeService';
+import { getOffers } from '../api/services/OffersServices';
 
 const VoucherCode = () => {
     const [showForm, setShowForm] = useState(false);
@@ -37,67 +37,17 @@ const VoucherCode = () => {
         fetchOffers();
     }, []);
 
-    const columns = [
-        'id',
-        'code',
-        'offer_id',
-        'valid_date',
-        'status',
-    ];
+    const handleEdit = (row) => {
+        setEditingVoucherCode(row);
+        setShowForm(true);
+    };
 
-    const actions = [
-        {
-            label: 'Edit',
-            className: 'btn-edit',
-            onClick: (row) => {
-                setEditingVoucherCode(row);
-                setShowForm(true);
-            },
-        },
-        {
-            label: 'Delete',
-            className: 'btn-delete',
-            onClick: async (row) => {
-                if (window.confirm(`Are you sure you want to delete voucher "${row.code}"?`)) {
-                    await deleteVoucherCode(row.id);
-                    fetchVoucherCodes();
-                }
-            },
-        },
-    ];
-
-    const formFields = [
-        {
-            label: 'Code',
-            name: 'code',
-            type: 'text',
-            placeholder: 'Enter voucher unique code',
-            required: true,
-        },
-        {
-            label: 'Valid Date',
-            name: 'valid_date',
-            type: 'date',
-            required: true,
-        },
-        {
-            label: 'Offers',
-            name: 'offer_id',
-            type: 'select',
-            options: offers,
-            required: true,
-        },
-        {
-            label: 'Status',
-            name: 'status',
-            type: 'radio',
-            options: [
-                { value: 'active', label: 'Active' },
-                { value: 'inactive', label: 'Inactive' }
-            ],
-            required: true,
-        },
-    ];
+    const handleDelete = async (row) => {
+        if (window.confirm(`Are you sure you want to delete voucher "${row.code}"?`)) {
+            await deleteVoucherCode(row.id);
+            fetchVoucherCodes();
+        }
+    };
 
     const handleSubmit = async (e, formData) => {
         e.preventDefault();
@@ -139,20 +89,22 @@ const VoucherCode = () => {
                 </button>
             </header>
 
-            <DataTable columns={columns} data={voucherCodes} actions={actions} />
+            <VoucherCodeTable
+                data={voucherCodes}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+            />
 
-            {showForm && (
-                <ModalForm
-                    title={editingVoucherCode ? 'Edit Voucher Code' : 'Add New Voucher Code'}
-                    onClose={() => {
-                        setShowForm(false);
-                        setEditingVoucherCode(null);
-                    }}
-                    onSubmit={handleSubmit}
-                    fields={formFields}
-                    initialValues={editingVoucherCode || {}}
-                />
-            )}
+            <VoucherCodeForm
+                showForm={showForm}
+                editingVoucherCode={editingVoucherCode}
+                onClose={() => {
+                    setShowForm(false);
+                    setEditingVoucherCode(null);
+                }}
+                onSubmit={handleSubmit}
+                offers={offers}
+            />
         </div>
     );
 };

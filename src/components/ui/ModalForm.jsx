@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import "../../assets/style/formModel.css"
+import "../../assets/style/formModel.css";
 
 const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => {
     const [formData, setFormData] = useState({});
@@ -7,7 +7,12 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
     useEffect(() => {
         const defaults = {};
         fields.forEach(field => {
-            defaults[field.name] = initialValues[field.name] || '';
+            if (field.type === 'date' && initialValues[field.name]) {
+                const dateValue = new Date(initialValues[field.name]);
+                defaults[field.name] = dateValue.toISOString().split('T')[0];
+            } else {
+                defaults[field.name] = initialValues[field.name] || '';
+            }
         });
         setFormData(defaults);
     }, [initialValues, fields]);
@@ -25,6 +30,12 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
         onSubmit(e, formData);
     };
 
+    const formatDateForInput = (dateString) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0];
+    };
+
     return (
         <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
             <div className="modal-content">
@@ -35,7 +46,12 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
                 <form onSubmit={handleSubmit}>
                     <div className="form-grid">
                         {fields.map((field, idx) => {
-                            const value = formData[field.name] || '';
+                            let value = formData[field.name] || '';
+
+                            if (field.type === 'date' && value) {
+                                value = formatDateForInput(value);
+                            }
+
                             return (
                                 <div
                                     className={`form-group ${field.fullWidth ? 'full-width' : ''}`}
@@ -98,6 +114,17 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
                                             />
                                             {field.placeholder || field.label}
                                         </label>
+                                    ) : field.type === 'date' ? (
+                                        <input
+                                            type="date"
+                                            id={field.name}
+                                            name={field.name}
+                                            required={field.required ?? true}
+                                            value={value}
+                                            onChange={handleChange}
+                                            min={field.min}
+                                            max={field.max}
+                                        />
                                     ) : (
                                         <input
                                             type={field.type}

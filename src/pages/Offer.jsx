@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import DataTable from '../components/ui/DataTable';
-import ModalForm from '../components/ui/ModalForm';
-import {
-    getOffers,
-    createOffer,
-    updateOffer,
-    deleteOffer
-} from '../services/offersServices';
-import { getMerchants } from '../services/merchantService';
+import OfferForm from '../components/offers/OfferForm';
+import OfferTable from '../components/offers/OfferTable';
+import { getOffers, createOffer, updateOffer, deleteOffer } from '../api/services/OffersServices';
+import { getMerchants } from '../api/services/MerchantService';
 
 const Offer = () => {
     const [showForm, setShowForm] = useState(false);
@@ -42,86 +37,17 @@ const Offer = () => {
         fetchMerchants();
     }, []);
 
-    const columns = [
-        'id',
-        'title',
-        'discount_percentage',
-        'offer_amount',
-        'valid_from',
-        'valid_until',
-        'merchant.name'
-    ];
+    const handleEdit = (row) => {
+        setEditingOffer(row);
+        setShowForm(true);
+    };
 
-    const actions = [
-        {
-            label: 'Edit',
-            className: 'btn-edit',
-            onClick: (row) => {
-                setEditingOffer(row);
-                setShowForm(true);
-            },
-        },
-        {
-            label: 'Delete',
-            className: 'btn-delete',
-            onClick: async (row) => {
-                if (window.confirm(`Are you sure you want to delete offer "${row.title}"?`)) {
-                    await deleteOffer(row.id);
-                    fetchOffers();
-                }
-            },
-        },
-    ];
-
-    const formFields = [
-        {
-            label: 'Title',
-            name: 'title',
-            type: 'text',
-            placeholder: 'Enter offer title',
-            required: true,
-        },
-        {
-            label: 'Description',
-            name: 'description',
-            type: 'textarea',
-            placeholder: 'Enter offer description',
-            required: false,
-        },
-        {
-            label: 'Discount Percentage',
-            name: 'discount_percentage',
-            type: 'number',
-            placeholder: 'Enter discount %',
-            required: true,
-        },
-        {
-            label: 'Offer Amount',
-            name: 'offer_amount',
-            type: 'number',
-            placeholder: 'Enter offer amount',
-            required: true,
-        },
-        {
-            label: 'Valid From',
-            name: 'valid_from',
-            type: 'date',
-            required: true,
-        },
-        {
-            label: 'Valid Until',
-            name: 'valid_until',
-            type: 'date',
-            required: true,
-        },
-        {
-            label: 'Merchant',
-            name: 'merchant_id',
-            type: 'select',
-            options: merchants,
-            required: true,
-        },
-    ];
+    const handleDelete = async (row) => {
+        if (window.confirm(`Are you sure you want to delete offer "${row.title}"?`)) {
+            await deleteOffer(row.id);
+            fetchOffers();
+        }
+    };
 
     const handleSubmit = async (e, formData) => {
         e.preventDefault();
@@ -166,20 +92,18 @@ const Offer = () => {
                 </button>
             </header>
 
-            <DataTable columns={columns} data={offers} actions={actions} />
+            <OfferTable data={offers} onEdit={handleEdit} onDelete={handleDelete} />
 
-            {showForm && (
-                <ModalForm
-                    title={editingOffer ? 'Edit Offer' : 'Add New Offer'}
-                    onClose={() => {
-                        setShowForm(false);
-                        setEditingOffer(null);
-                    }}
-                    onSubmit={handleSubmit}
-                    fields={formFields}
-                    initialValues={editingOffer || {}}
-                />
-            )}
+            <OfferForm
+                visible={showForm}
+                onClose={() => {
+                    setShowForm(false);
+                    setEditingOffer(null);
+                }}
+                onSubmit={handleSubmit}
+                editingOffer={editingOffer}
+                merchants={merchants}
+            />
         </div>
     );
 };
