@@ -20,17 +20,17 @@ const Sidebar = () => {
                     </li>
                     <li className={isActive('/Merchant') ? 'active' : ''}>
                         <NavLink to="/Merchant">
-                            Merchant
+                            Merchants
                         </NavLink>
                     </li>
-                    <li className={isActive('/products') ? 'active' : ''}>
-                        <NavLink to="/products">
+                    <li className={isActive('/Offer') ? 'active' : ''}>
+                        <NavLink to="/Offer">
                             Offers
                         </NavLink>
                     </li>
-                    <li className={isActive('/orders') ? 'active' : ''}>
-                        <NavLink to="/orders">
-                            Vouturs
+                    <li className={isActive('/VoucherCode') ? 'active' : ''}>
+                        <NavLink to="/VoucherCode">
+                            Voucher Codes
                         </NavLink>
                     </li>
                 </ul>
