@@ -4,7 +4,6 @@ import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Sidebar from './components/layout/Sidebar';
 import Navbar from './components/layout/Navbar';
-import Dashboard from './pages/Dashboard';
 import Merchant from './pages/Merchant';
 import Login from './pages/Login';
 import Offer from './pages/Offer';
@@ -28,7 +27,6 @@ const AppLayout = () => {
         <Navbar />
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<Dashboard />} />
             <Route path="/Merchant" element={<Merchant />} />
             <Route path="/Offer" element={<Offer />} />
             <Route path="/VoucherCode" element={<VoucherCode />} />

@@ -46,7 +46,11 @@ const Merchant = () => {
                 toast.success('Merchant deleted successfully');
             } catch (error) {
                 console.error('Error deleting merchant:', error);
-                toast.error('Failed to delete merchant');
+                if (error.response && error.response.data && error.response.data.message) {
+                    toast.error(error.response.data.message);
+                } else {
+                    toast.error('Failed to delete merchant');
+                }
             }
         }
     };

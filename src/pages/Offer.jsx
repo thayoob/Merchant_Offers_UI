@@ -26,10 +26,12 @@ const Offer = () => {
     const fetchMerchants = async () => {
         try {
             const data = await getMerchants();
-            const formattedMerchants = data.map((merchant) => ({
-                value: merchant.id,
-                label: merchant.name,
-            }));
+            const formattedMerchants = data
+                .filter((merchant) => merchant.status === 'active')
+                .map((merchant) => ({
+                    value: merchant.id,
+                    label: merchant.name,
+                }));
             setMerchants(formattedMerchants);
         } catch (error) {
             console.error('Error fetching merchants:', error);
@@ -102,11 +104,9 @@ const Offer = () => {
             fetchOffers();
         } catch (error) {
             if (error.response && error.response.status === 422) {
-                // Handle validation errors
                 setFormErrors(error.response.data.errors);
                 toast.error('Please fix the form errors');
 
-                // Only clear fields that have errors
                 const updatedFormData = { ...submittedFormData };
                 Object.keys(error.response.data.errors).forEach(field => {
                     updatedFormData[field] = '';

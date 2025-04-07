@@ -49,7 +49,6 @@ const VoucherCode = () => {
         setFormErrors(null);
         setFormData({
             code: row.code,
-            valid_date: row.valid_date,
             offer_id: row.offer_id,
             status: row.status,
         });
@@ -77,7 +76,6 @@ const VoucherCode = () => {
 
         const payload = {
             code: submittedFormData.code,
-            valid_date: submittedFormData.valid_date,
             offer_id: submittedFormData.offer_id,
             status: submittedFormData.status,
         };
@@ -90,21 +88,30 @@ const VoucherCode = () => {
                 await createVoucherCode(payload);
                 toast.success('Voucher code created successfully');
             }
+
             setShowForm(false);
             setEditingVoucherCode(null);
             setFormErrors(null);
             setFormData(null);
             fetchVoucherCodes();
+
         } catch (error) {
             if (error.response && error.response.status === 422) {
-                setFormErrors(error.response.data.errors);
-                toast.error('Please fix the form errors');
+                const response = error.response.data;
 
-                const updatedFormData = { ...submittedFormData };
-                Object.keys(error.response.data.errors).forEach(field => {
-                    updatedFormData[field] = '';
-                });
-                setFormData(updatedFormData);
+                if (response.errors) {
+                    setFormErrors(response.errors);
+                    toast.error('Please fix the form errors');
+
+                    const updatedFormData = { ...submittedFormData };
+                    Object.keys(response.errors).forEach(field => {
+                        updatedFormData[field] = '';
+                    });
+                    setFormData(updatedFormData);
+                } else if (response.message) {
+                    toast.error(response.message);
+                }
+
             } else {
                 console.error('Error saving voucher code:', error);
                 toast.error('Failed to save voucher code');
@@ -118,7 +125,6 @@ const VoucherCode = () => {
         setFormErrors(null);
         setFormData({
             code: generateVoucherCode(),
-            valid_date: '',
             offer_id: '',
             status: 'active',
         });

@@ -1,7 +1,16 @@
 import React from 'react';
 import ModalForm from '../ui/ModalForm';
 
-const OfferForm = ({ visible, onClose, onSubmit, editingOffer, merchants, errors, formData, onFormDataChange }) => {
+const OfferForm = ({
+    visible,
+    onClose,
+    onSubmit,
+    editingOffer,
+    merchants,
+    errors,
+    formData,
+    onFormDataChange
+}) => {
     const formFields = [
         {
             label: 'Title',

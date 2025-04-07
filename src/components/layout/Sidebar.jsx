@@ -13,11 +13,6 @@ const Sidebar = () => {
             </div>
             <nav className="sidebar-nav">
                 <ul>
-                    <li className={isActive('/') ? 'active' : ''}>
-                        <NavLink to="/">
-                            Dashboard
-                        </NavLink>
-                    </li>
                     <li className={isActive('/Merchant') ? 'active' : ''}>
                         <NavLink to="/Merchant">
                             Merchants

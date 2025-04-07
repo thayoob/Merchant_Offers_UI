@@ -3,6 +3,7 @@ import DataTable from '../ui/DataTable';
 
 const VoucherCodeTable = ({ data, onEdit, onDelete }) => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
 
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
@@ -64,6 +65,10 @@ const VoucherCodeTable = ({ data, onEdit, onDelete }) => {
     ];
 
     const filteredData = data.filter(voucher => {
+        if (statusFilter !== 'all' && voucher.status?.toLowerCase() !== statusFilter) {
+            return false;
+        }
+
         if (!searchTerm) return true;
         const searchLower = searchTerm.toLowerCase();
         return (
@@ -82,20 +87,33 @@ const VoucherCodeTable = ({ data, onEdit, onDelete }) => {
     return (
         <div className="table-wrapper">
             <div className="table-header">
-                <div className="search-box">
-                    <input
-                        type="text"
-                        placeholder="Search voucher codes..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="search-input"
-                    />
-                    <span className="search-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                    </span>
+                <div className="filters-container">
+                    <div className="search-box">
+                        <input
+                            type="text"
+                            placeholder="Search voucher codes..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="search-input"
+                        />
+                        <span className="search-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </span>
+                    </div>
+                    <div className="status-filter">
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="filter-select"
+                        >
+                            <option value="all">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <DataTable

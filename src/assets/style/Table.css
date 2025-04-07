@@ -214,3 +214,45 @@ tr:hover {
     color: #6b7280;
     margin-bottom: 10px;
 }
+
+.filters-container {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    align-items: center;
+}
+
+.status-filter {
+    position: relative;
+    min-width: 150px;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    background-color: white;
+    appearance: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(33, 143, 165, 0.2);
+}
+
+@media (max-width: 768px) {
+    .filters-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .status-filter,
+    .search-box {
+        width: 100%;
+    }
+}

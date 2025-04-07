@@ -20,12 +20,6 @@ const VoucherCodeForm = ({
             required: true,
         },
         {
-            label: 'Valid Date',
-            name: 'valid_date',
-            type: 'date',
-            required: true,
-        },
-        {
             label: 'Offers',
             name: 'offer_id',
             type: 'select',
@@ -38,7 +32,7 @@ const VoucherCodeForm = ({
             type: 'radio',
             options: [
                 { value: 'active', label: 'Active' },
-                { value: 'inactive', label: 'Inactive' },
+                { value: 'expired', label: 'Expired' },
             ],
             required: true,
         },
