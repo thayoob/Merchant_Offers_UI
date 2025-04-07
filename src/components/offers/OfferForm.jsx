@@ -1,7 +1,7 @@
 import React from 'react';
 import ModalForm from '../ui/ModalForm';
 
-const OfferForm = ({ visible, onClose, onSubmit, editingOffer, merchants }) => {
+const OfferForm = ({ visible, onClose, onSubmit, editingOffer, merchants, errors, formData, onFormDataChange }) => {
     const formFields = [
         {
             label: 'Title',
@@ -23,6 +23,9 @@ const OfferForm = ({ visible, onClose, onSubmit, editingOffer, merchants }) => {
             type: 'number',
             placeholder: 'Enter discount %',
             required: true,
+            step: "0.01",
+            min: 0,
+            max: 100
         },
         {
             label: 'Offer Amount',
@@ -30,6 +33,7 @@ const OfferForm = ({ visible, onClose, onSubmit, editingOffer, merchants }) => {
             type: 'number',
             placeholder: 'Enter offer amount',
             required: true,
+            min: 0
         },
         {
             label: 'Valid From',
@@ -60,7 +64,10 @@ const OfferForm = ({ visible, onClose, onSubmit, editingOffer, merchants }) => {
                     onClose={onClose}
                     onSubmit={onSubmit}
                     fields={formFields}
-                    initialValues={editingOffer || {}}
+                    initialValues={formData || (editingOffer || {})}
+                    apiErrors={errors}
+                    externalFormData={formData}
+                    onExternalChange={onFormDataChange}
                 />
             )}
         </>

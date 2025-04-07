@@ -1,15 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DataTable from '../ui/DataTable';
 
 const OfferTable = ({ data, onEdit, onDelete }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'N/A';
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
     const columns = [
-        { key: 'id', label: 'ID' },
+        { key: 'serial', label: 'SL No' },
         { key: 'title', label: 'Title' },
-        { key: 'discount_percentage', label: 'Discount' },
-        { key: 'offer_amount', label: 'Amount' },
-        { key: 'valid_from', label: 'Valid From' },
-        { key: 'valid_until', label: 'Valid Until' },
-        { key: 'merchant.name', label: 'Merchant' }
+        {
+            key: 'discount_percentage',
+            label: 'Discount',
+            render: (value) => value ? `${value}%` : 'N/A'
+        },
+        {
+            key: 'offer_amount',
+            label: 'Amount',
+            render: (value) => value ? `$${parseFloat(value).toFixed(2)}` : 'N/A'
+        },
+        {
+            key: 'valid_from',
+            label: 'Valid From',
+            render: (value) => formatDate(value)
+        },
+        {
+            key: 'valid_until',
+            label: 'Valid Until',
+            render: (value) => formatDate(value)
+        },
+        {
+            key: 'merchant',
+            label: 'Merchant',
+            render: (value) => value?.name || 'N/A'
+        }
     ];
 
     const actions = [
@@ -25,7 +53,51 @@ const OfferTable = ({ data, onEdit, onDelete }) => {
         },
     ];
 
-    return <DataTable columns={columns} data={data} actions={actions} />;
+    const filteredData = data.filter(offer => {
+        if (!searchTerm) return true;
+        const searchLower = searchTerm.toLowerCase();
+        return (
+            (offer.title?.toLowerCase()?.includes(searchLower)) ||
+            (offer.discount_percentage?.toString()?.includes(searchLower)) ||
+            (offer.offer_amount?.toString()?.includes(searchLower)) ||
+            (offer.merchant?.name?.toLowerCase()?.includes(searchLower)) ||
+            formatDate(offer.valid_from)?.toLowerCase()?.includes(searchLower) ||
+            formatDate(offer.valid_until)?.toLowerCase()?.includes(searchLower)
+        );
+    });
+
+    const dataWithSerial = filteredData.map((item, index) => ({
+        serial: index + 1,
+        ...item
+    }));
+
+    return (
+        <div className="table-wrapper">
+            <div className="table-header">
+                <div className="search-box">
+                    <input
+                        type="text"
+                        placeholder="Search offers..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-input"
+                    />
+                    <span className="search-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+            <DataTable
+                columns={columns}
+                data={dataWithSerial}
+                actions={actions}
+                emptyMessage="No offers found"
+            />
+        </div>
+    );
 };
 
 export default OfferTable;

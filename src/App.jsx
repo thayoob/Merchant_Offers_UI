@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Sidebar from './components/layout/Sidebar';
 import Navbar from './components/layout/Navbar';
@@ -13,7 +14,7 @@ const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return <div className="loader-container"><div className="spinner"></div></div>;
   }
 
   return user ? children : <Navigate to="/login" replace />;
@@ -42,13 +43,18 @@ const App = () => {
   return (
     <Router>
       <AuthProvider>
+        <Toaster position="top-right" reverseOrder={false} />
+
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/*" element={
-            <PrivateRoute>
-              <AppLayout />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/*"
+            element={
+              <PrivateRoute>
+                <AppLayout />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </AuthProvider>
     </Router>

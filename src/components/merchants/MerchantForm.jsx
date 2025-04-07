@@ -42,7 +42,7 @@ const formFields = [
     },
 ];
 
-const MerchantForm = ({ visible, onClose, onSubmit, editingMerchant }) => {
+const MerchantForm = ({ visible, onClose, onSubmit, editingMerchant, errors, formData, onFormDataChange }) => {
     return (
         <>
             {visible && (
@@ -51,7 +51,10 @@ const MerchantForm = ({ visible, onClose, onSubmit, editingMerchant }) => {
                     onClose={onClose}
                     onSubmit={onSubmit}
                     fields={formFields}
-                    initialValues={editingMerchant || {}}
+                    initialValues={formData || (editingMerchant || {})}
+                    apiErrors={errors}
+                    externalFormData={formData}
+                    onExternalChange={onFormDataChange}
                 />
             )}
         </>

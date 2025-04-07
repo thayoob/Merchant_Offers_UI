@@ -7,6 +7,9 @@ const VoucherCodeForm = ({
     onClose,
     onSubmit,
     offers,
+    errors,
+    formData,
+    onFormDataChange
 }) => {
     const formFields = [
         {
@@ -48,7 +51,10 @@ const VoucherCodeForm = ({
                 onClose={onClose}
                 onSubmit={onSubmit}
                 fields={formFields}
-                initialValues={editingVoucherCode || {}}
+                initialValues={formData || (editingVoucherCode || {})}
+                apiErrors={errors}
+                externalFormData={formData}
+                onExternalChange={onFormDataChange}
             />
         )
     );

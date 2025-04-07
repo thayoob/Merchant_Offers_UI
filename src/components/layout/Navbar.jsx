@@ -19,9 +19,13 @@ const Navbar = () => {
                         <FaUserCircle className="profile-icon" />
                         {dropdownVisible && (
                             <div className="dropdown-menu">
-                                <span>{user.name}</span>
-                                <span>{user.email}</span>
-                                <button onClick={logout}>Logout</button>
+                                <div className="dropdown-info">
+                                    <strong>{user.name}</strong>
+                                    <p>{user.email}</p>
+                                </div>
+                                <button className="logout-btn" onClick={logout}>
+                                    Logout
+                                </button>
                             </div>
                         )}
                     </div>

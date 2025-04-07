@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import "../../assets/style/formModel.css";
 
-const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => {
+const ModalForm = ({
+    title,
+    onClose,
+    onSubmit,
+    fields,
+    initialValues = {},
+    apiErrors,
+    externalFormData,
+    onExternalChange
+}) => {
     const [formData, setFormData] = useState({});
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         const defaults = {};
@@ -17,12 +27,37 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
         setFormData(defaults);
     }, [initialValues, fields]);
 
+    useEffect(() => {
+        if (apiErrors) {
+            setErrors(apiErrors);
+        }
+    }, [apiErrors]);
+
+    useEffect(() => {
+        if (externalFormData) {
+            setFormData(externalFormData);
+        }
+    }, [externalFormData]);
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData({
+        const newFormData = {
             ...formData,
             [name]: type === 'checkbox' ? checked : value,
-        });
+        };
+
+        setFormData(newFormData);
+        if (onExternalChange) {
+            onExternalChange(newFormData);
+        }
+
+        if (errors[name]) {
+            setErrors(prev => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+            });
+        }
     };
 
     const handleSubmit = (e) => {
@@ -36,6 +71,18 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
         return date.toISOString().split('T')[0];
     };
 
+    const renderFieldError = (fieldName) => {
+        if (!errors[fieldName]) return null;
+
+        return (
+            <div className="field-error">
+                {Array.isArray(errors[fieldName])
+                    ? errors[fieldName].join(' ')
+                    : errors[fieldName]}
+            </div>
+        );
+    };
+
     return (
         <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
             <div className="modal-content">
@@ -43,6 +90,11 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
                     <h3>{title}</h3>
                     <button className="modal-close" onClick={onClose}>&times;</button>
                 </div>
+                {errors.general && (
+                    <div className="form-error-message">
+                        {errors.general}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="form-grid">
                         {fields.map((field, idx) => {
@@ -54,7 +106,7 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
 
                             return (
                                 <div
-                                    className={`form-group ${field.fullWidth ? 'full-width' : ''}`}
+                                    className={`form-group ${field.fullWidth ? 'full-width' : ''} ${errors[field.name] ? 'has-error' : ''}`}
                                     key={idx}
                                     style={field.style}
                                 >
@@ -69,6 +121,7 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
                                             required={field.required ?? true}
                                             value={value}
                                             onChange={handleChange}
+                                            className={errors[field.name] ? 'error' : ''}
                                         >
                                             <option value="" disabled>Select {field.label}</option>
                                             {field.options?.map((option, i) => (
@@ -86,6 +139,7 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
                                             rows={field.rows || 4}
                                             value={value}
                                             onChange={handleChange}
+                                            className={errors[field.name] ? 'error' : ''}
                                         />
                                     ) : field.type === 'radio' ? (
                                         <div className="radio-group">
@@ -124,6 +178,7 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
                                             onChange={handleChange}
                                             min={field.min}
                                             max={field.max}
+                                            className={errors[field.name] ? 'error' : ''}
                                         />
                                     ) : (
                                         <input
@@ -137,9 +192,11 @@ const ModalForm = ({ title, onClose, onSubmit, fields, initialValues = {} }) => 
                                             min={field.min}
                                             max={field.max}
                                             onChange={handleChange}
+                                            className={errors[field.name] ? 'error' : ''}
                                         />
                                     )}
 
+                                    {renderFieldError(field.name)}
                                     {field.helpText && <small className="help-text">{field.helpText}</small>}
                                 </div>
                             );

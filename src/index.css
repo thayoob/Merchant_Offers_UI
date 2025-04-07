@@ -1,4 +1,3 @@
-/* Reset and Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -114,6 +113,7 @@ body {
   justify-content: flex-end;
   height: 60px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--box-shadow);
 }
 
 .navbar-content {
@@ -124,8 +124,9 @@ body {
 }
 
 .navbar-title {
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .profile-section {
@@ -134,31 +135,73 @@ body {
 }
 
 .profile-icon {
-  font-size: 1.8rem;
+  font-size: 2rem;
+  border-radius: 50%;
+  background-color: white;
+  color: var(--primary-color);
+  padding: 4px;
+  transition: transform 0.3s ease;
+}
+
+.profile-icon:hover {
+  transform: scale(1.1);
 }
 
 .dropdown-menu {
   position: absolute;
   right: 0;
   top: 120%;
-  background-color: #0f4a59;
-  padding: 10px 0;
-  border-radius: 6px;
+  background-color: var(--secondary-color);
+  padding: 12px 16px;
+  border-radius: 8px;
   box-shadow: var(--box-shadow);
-  min-width: 120px;
+  min-width: 180px;
   z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+  color: white;
 }
 
-.dropdown-menu a {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-info {
+  margin-bottom: 10px;
+}
+
+.dropdown-info strong {
   display: block;
-  padding: 8px 16px;
+  font-size: 0.95rem;
+}
+
+.dropdown-info p {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin: 4px 0 0;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 8px 10px;
+  background-color: #d9534f;
   color: white;
-  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
   transition: background 0.3s;
 }
 
-.dropdown-menu a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.logout-btn:hover {
+  background-color: #c9302c;
 }
 
 /* Content Header */
@@ -209,5 +252,32 @@ body {
 
   .navbar {
     justify-content: space-between;
+  }
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Spinner */
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid #e5e7eb;
+  border-top: 6px solid #18697C;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }

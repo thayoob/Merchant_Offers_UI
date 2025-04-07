@@ -23,9 +23,11 @@ const DataTable = ({ columns, data, actions }) => {
                             <tr key={index}>
                                 {columns.map((col, colIndex) => (
                                     <td key={colIndex}>
-                                        {col.key.includes('.')
-                                            ? getNestedValue(row, col.key)
-                                            : row[col.key]}
+                                        {col.render
+                                            ? col.render(row[col.key])
+                                            : col.key.includes('.')
+                                                ? getNestedValue(row, col.key)
+                                                : row[col.key]}
                                     </td>
                                 ))}
                                 {actions && actions.length > 0 && (
